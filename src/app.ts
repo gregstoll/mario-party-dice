@@ -29,7 +29,25 @@ const DICE_DATA = new Map<string, CharacterDiceData>([
 
 function validateData() {
     for (const [character, data] of Array.from(DICE_DATA.entries())) {
-        // TODO - assert data looks valid
+        if (character.length == 0) {
+            console.error("Character name is empty");
+        }
+        if (data.coins.length + data.moves.length !== 6) {
+            console.error("Invalid number of dice for character ", character);
+        }
+        if (data.moves.length < 4) {
+            console.error("Not enough moves for character ", character);
+        }
+        for (const coin of data.coins) {
+            if (coin < -5 || coin > 5) {
+                console.error(`Coin value ${coin} out of range for character `, character);
+            }
+        }
+        for (const move of data.moves) {
+            if (move < 0 || move > 10) {
+                console.error(`Move value ${move} out of range for character `, character);
+            }
+        }
     }
 }
 
