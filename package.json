@@ -1,0 +1,29 @@
+{
+  "name": "mario-party-dice",
+  "version": "1.0.0",
+  "description": "An analysis of dice blocks in Super Mario PArty",
+  "private": true,
+  "scripts": {
+    "start": "webpack serve --liveReload",
+    "build": "webpack --config webpack.prod.config.js && node replaceSsiTags.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gregstoll/populationcenters.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/plotly.js": "^1.54.10",
+    "copy-webpack-plugin": "^9.0.0",
+    "ts-loader": "^9.2.3",
+    "typescript": "^4.3.4",
+    "webpack": "^5.40.0",
+    "webpack-cli": "^4.7.2",
+    "webpack-dev-server": "^3.11.2"
+  },
+  "dependencies": {
+    "plotly.js-basic-dist-min": "^2.1.0"
+  }
+}
