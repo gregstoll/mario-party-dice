@@ -1,5 +1,16 @@
 import Plotly from 'plotly.js-basic-dist-min';
 
+interface CharacterDiceData {
+    coins: number[];
+    moves: number[];
+}
+const DICE_DATA = new Map<string, CharacterDiceData>([
+    ["(no character)", {coins: [], moves: [1,2,3,4,5,6]}],
+    ["Mario", {coins: [], moves: [1,3,3,3,5,6]}],
+    ["Luigi", {coins: [], moves: [1,1,1,5,6,7]}],
+    ["Peach", {coins: [], moves: [0,2,4,4,4,6]}],
+]);
+
 function setupNoCoinsChart() {
     let scatterData = {
         x: [21, 21, 21, 20, 20, 19, 20, 20, 20, 21, 20],
