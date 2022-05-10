@@ -88,6 +88,15 @@ function make_plotly_regression_line(xs: number[], ys: number[]) : object {
     }
 }
 
+function get_moves_and_coin_string(data: CharacterDiceData) : string {
+    const coin_string = data.coins.map(coin => `${coin > 0 ? "+" : ""}${coin} coin${coin !== 1 ? "s" : ""}`).join(",");
+    const move_string = data.moves.map(move => `${move}`).join(",");
+    if (coin_string.length > 0) {
+        return coin_string + "," + move_string;
+    }
+    return move_string;
+}
+
 function calculate_regression_line_correlation(xs: number[], ys: number[], info: RegressionInfo) : number {
     let regressionSquaredError = 0
     let totalSquaredError = 0
@@ -103,7 +112,7 @@ function calculate_regression_line_correlation(xs: number[], ys: number[], info:
         totalSquaredError += Math.pow(ys[i] - yMean, 2)
     }
     
-    return 1 - (regressionSquaredError / totalSquaredError)
+    return 1 - (regressionSquaredError / totalSquaredError);
 }
 
 function get_regression_line_string(info: RegressionInfo, correlation: number) : string {
@@ -122,7 +131,7 @@ function setupNoCoinsChart() {
         if (data.coins.length === 0) {
             xs.push(data.moves.reduce((a, b) => a + b));
             ys.push(standard_deviation(data.moves));
-            texts.push(character + "<br>Dice: " + data.moves.join(","));
+            texts.push(character + "<br>Dice: " + get_moves_and_coin_string(data));
         }
     }
     const scatterData = {
@@ -170,8 +179,7 @@ function setupCoinsChart() {
             xs.push(data.moves.reduce((a, b) => a + b));
             ys.push(data.coins.reduce((a, b) => a + b));
             sizes.push(standard_deviation(data.moves));
-            // TODO - coins too
-            texts.push(character + "<br>Dice: " + data.moves.join(","));
+            texts.push(character + "<br>Dice: " + get_moves_and_coin_string(data));
         }
     }
     let scatterData = {
@@ -233,8 +241,7 @@ function setupCoinsByStandardDeviationChart() {
             let x = data.moves.reduce((a, b) => a + b);
             let y = data.coins.reduce((a, b) => a + b);
             ys.push(distance_from_regression_line(original_regression_line_info, x, y));
-            // TODO - coins too
-            texts.push(character + "<br>Dice: " + data.moves.join(","));
+            texts.push(character + "<br>Dice: " + get_moves_and_coin_string(data));
         }
     }
     let scatterData = {
