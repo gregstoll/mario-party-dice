@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" color-mode="light">
+<html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -22,8 +22,8 @@ body {
   font-family: var(--sans);
   font-size: 1rem;
   line-height: 1.5;
-  background-color: #e6e6e6 !important;
-  background-color: var(--surface1, #e6e6e6) !important;
+  /*background-color: #e6e6e6 !important;
+  background-color: var(--surface1, #e6e6e6) !important;*/
 }
 
 
@@ -37,9 +37,14 @@ body {
   <body>
     <ssibodytop />
       <div class="container">
-        <div style="width: 100%; text-align: center;">
-            <h1 style="display: inline-block;">MLB Division Race Charts</h1>
+        <!--<div style="width: 100%; text-align: center;"> -->
+        <div>
+            <h1 style="display: inline-block;">Dice Block Analysis in Super Mario Party</h1>
             <p><a href="#about">About this project</a></p>
+            <p>The kids have been enjoying Super Mario Party (the 2018 one for the Switch), and while playing
+              I've been curious about the wildly different dice blocks each character has. (you can 
+              <a href="https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks">see a list of them here</a>)
+            </p>
             <p>No coins</p>
             <div id="noCoinsChart"></div>
             <p>Coins</p>
@@ -51,8 +56,6 @@ body {
     <div id="about">
       <p><b>About this project:</b> TODO</p>
       <p>Source files available. Here's a <a href="https://gregstoll.wordpress.com/2021/07/03/new-project-baseball-division-race-charts/">short writeup of the project</a>.</p>
-      <p>TODO - cite https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks</p>
-      <p><a href="/~gregstoll/baseball/">Baseball statistic calculators</a></p>
     </div>
     <script src="https://cdn.plot.ly/plotly-2.2.0.min.js"></script>
     <script type="text/javascript" src="dist/app.bundle.js"></script>
