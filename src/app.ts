@@ -4,6 +4,10 @@ interface CharacterDiceData {
     coins: number[];
     moves: number[];
 }
+interface RegressionInfo {
+    slope: number;
+    intercept: number;
+}
 const DICE_DATA = new Map<string, CharacterDiceData>([
     ["(no character)", {coins: [], moves: [1,2,3,4,5,6]}],
     ["Mario", {coins: [], moves: [1,3,3,3,5,6]}],
@@ -24,6 +28,7 @@ const DICE_DATA = new Map<string, CharacterDiceData>([
     ["Goomba", {coins: [2,2], moves: [3,4,5,6]}],
     ["Monty Mole", {coins: [1], moves: [2,3,4,5,6]}],
     ["Bowser", {coins: [-3,-3], moves: [1,8,9,10]}],
+    ["Boo", {coins: [-2,-2], moves: [5,5,7,7]}],
     ["Hammer Bro", {coins: [3], moves: [1,1,5,5,5]}],
 ]);
 
@@ -51,11 +56,62 @@ function validateData() {
     }
 }
 
-function standardDeviation(values: number[]): number {
+function standard_deviation(values: number[]): number {
     const avg = values.reduce((a, b) => a + b) / values.length;
     const squareDiffs = values.map(value => (value - avg) ** 2);
     const avgSquareDiff = squareDiffs.reduce((a, b) => a + b) / values.length;
     return Math.sqrt(avgSquareDiff);
+}
+
+function calculate_regression_line(xs: number[], ys: number[]) : RegressionInfo {
+    const xAvg = xs.reduce((a, b) => a + b) / xs.length;
+    const yAvg = ys.reduce((a, b) => a + b) / ys.length;
+    const xyAvg = xs.map((x, i) => x * ys[i]).reduce((a, b) => a + b) / xs.length;
+    const x2Avg = xs.map(x => x ** 2).reduce((a, b) => a + b) / xs.length;
+    const slope = (xyAvg - xAvg * yAvg) / (x2Avg - xAvg ** 2);
+    const intercept = yAvg - slope * xAvg;
+    return {slope: slope, intercept: intercept};
+}
+
+function make_plotly_regression_line(xs: number[], ys: number[]) : object {
+    const line_info = calculate_regression_line(xs, ys);
+    const x_min = Math.min(...xs);
+    const x_max = Math.max(...xs);
+    return {
+        x: [x_min, x_max],
+        y: [line_info.slope * x_min + line_info.intercept, line_info.slope * x_max + line_info.intercept],
+        mode: "lines",
+        line: {
+            dash: 'dot',
+            width: 2
+        }
+    }
+}
+
+function calculate_regression_line_correlation(xs: number[], ys: number[], info: RegressionInfo) : number {
+    let regressionSquaredError = 0
+    let totalSquaredError = 0
+    
+    function yPrediction(x : number) {
+        return info.slope * x + info.intercept;
+    }
+    
+    const yMean = ys.reduce((a, b) => a + b) / ys.length
+    
+    for (let i = 0; i < xs.length; i++) {
+        regressionSquaredError += Math.pow(ys[i] - yPrediction(xs[i]), 2)
+        totalSquaredError += Math.pow(ys[i] - yMean, 2)
+    }
+    
+    return 1 - (regressionSquaredError / totalSquaredError)
+}
+
+function get_regression_line_string(info: RegressionInfo, correlation: number) : string {
+    return `y = ${info.slope.toFixed(3)}x + ${info.intercept.toFixed(3)}<br>R² = ${correlation.toFixed(3)}`;
+}
+
+function distance_from_regression_line(line_info: RegressionInfo, x: number, y: number) : number {
+    return (-1*line_info.slope*x + y - line_info.intercept)/Math.sqrt(1+Math.pow(line_info.slope, 2));
 }
 
 function setupNoCoinsChart() {
@@ -65,28 +121,155 @@ function setupNoCoinsChart() {
     for (const [character, data] of Array.from(DICE_DATA.entries())) {
         if (data.coins.length === 0) {
             xs.push(data.moves.reduce((a, b) => a + b));
-            ys.push(standardDeviation(data.moves));
+            ys.push(standard_deviation(data.moves));
             texts.push(character + "<br>Dice: " + data.moves.join(","));
         }
     }
-    let scatterData = {
-        //x: [21, 21, 21, 20, 20, 19, 20, 20, 20, 21, 20],
+    const scatterData = {
         x: xs,
-        //y: [1.7078, 1.6073, 2.5658, 1.8856, 0.4714, 2.3392, 1.4907, 3.0912, 2.8674, 2.5, 2.357],
         y: ys,
         mode: "markers",
-        //text: ["(no character)<br>Dice: 1,2,3,4,5,6", "Mario:<br>Dice: 1,3,3,3,5,6", "Luigi", "Peach", "Daisy", "Yoshi", "Shy Guy", "Koopa Troopa", "Bowser Jr", "Dry Bones", "Pom Pom"],
         text: texts
     };
-    let layout = {
+    const regression_line_info = calculate_regression_line(xs, ys);
+    const regression_line = make_plotly_regression_line(xs, ys);
+    const correlation = calculate_regression_line_correlation(xs, ys, regression_line_info);
+    const layout = {
         xaxis: {
             title: "Total of numbers on dice block",
         },
         yaxis: {
             title: "Standard deviation of dice block values",
+        },
+        annotations: [
+            {
+                xref: "x",
+                x: 19.5,
+                y: 1.75,
+                text: get_regression_line_string(regression_line_info, correlation),
+                font: {
+                    family: 'Arial',
+                    size: 14,
+                    color: "#222222"
+                },
+                showarrow: false
+            }
+        ],
+        showlegend: false
+    }
+    Plotly.newPlot('noCoinsChart', [scatterData, regression_line], layout, {responsive: true});
+}
+
+function setupCoinsChart() {
+    let xs: number[] = [];
+    let ys: number[] = [];
+    let sizes: number[] = [];
+    let texts: string[] = [];
+    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+        if (data.coins.length > 0) {
+            xs.push(data.moves.reduce((a, b) => a + b));
+            ys.push(data.coins.reduce((a, b) => a + b));
+            sizes.push(standard_deviation(data.moves));
+            // TODO - coins too
+            texts.push(character + "<br>Dice: " + data.moves.join(","));
         }
     }
-    Plotly.newPlot('noCoinsChart', [scatterData], layout, {responsive: true});
+    let scatterData = {
+        x: xs,
+        y: ys,
+        mode: "markers",
+        text: texts,
+        marker: {
+            size: sizes.map(size => size * 7)
+        }
+    };
+    const regression_line_info = calculate_regression_line(xs, ys);
+    const regression_line = make_plotly_regression_line(xs, ys);
+    const correlation = calculate_regression_line_correlation(xs, ys, regression_line_info);
+    const layout = {
+        xaxis: {
+            title: "Total of numbers on dice block",
+        },
+        yaxis: {
+            title: "Total of coins on dice block",
+        },
+        annotations: [
+            {
+                xref: "x",
+                x: 26,
+                y: -2,
+                text: get_regression_line_string(regression_line_info, correlation),
+                font: {
+                    family: 'Arial',
+                    size: 14,
+                    color: "#222222"
+                },
+                showarrow: false
+            }
+        ],
+        showlegend: false
+    }
+    Plotly.newPlot('coinsChart', [scatterData, regression_line], layout, {responsive: true});
+}
+
+function setupCoinsByStandardDeviationChart() {
+    let standard_deviations = new Map<string, number>();
+    let original_xs: number[] = [];
+    let original_ys: number[] = [];
+    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+        if (data.coins.length > 0) {
+            original_xs.push(data.moves.reduce((a, b) => a + b));
+            original_ys.push(data.coins.reduce((a, b) => a + b));
+            standard_deviations.set(character, standard_deviation(data.moves));
+        }
+    }
+    const original_regression_line_info = calculate_regression_line(original_xs, original_ys);
+    let xs: number[] = [];
+    let ys: number[] = [];
+    let texts: string[] = [];
+    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+        if (data.coins.length > 0) {
+            xs.push(standard_deviation(data.moves));
+            let x = data.moves.reduce((a, b) => a + b);
+            let y = data.coins.reduce((a, b) => a + b);
+            ys.push(distance_from_regression_line(original_regression_line_info, x, y));
+            // TODO - coins too
+            texts.push(character + "<br>Dice: " + data.moves.join(","));
+        }
+    }
+    let scatterData = {
+        x: xs,
+        y: ys,
+        mode: "markers",
+        text: texts
+    };
+    const regression_line_info = calculate_regression_line(xs, ys);
+    const regression_line = make_plotly_regression_line(xs, ys);
+    const correlation = calculate_regression_line_correlation(xs, ys, regression_line_info);
+    const layout = {
+        xaxis: {
+            title: "Standard deviation of numbers on dice block",
+        },
+        yaxis: {
+            title: "TODO \"goodness\"",
+        },
+        annotations: [
+            {
+                xref: "x",
+                x: 4,
+                y: 2,
+                text: get_regression_line_string(regression_line_info, correlation),
+                font: {
+                    family: 'Arial',
+                    size: 14,
+                    color: "#222222"
+                },
+                showarrow: false
+            }
+        ],
+        showlegend: false
+    }
+    Plotly.newPlot('coinsByStandardDeviationChart', [scatterData, regression_line], layout, {responsive: true});
 }
 
         /*Plotly.newPlot( chartSection.children.item(index), plot_datas,
@@ -119,5 +302,7 @@ function setupNoCoinsChart() {
 (function() {
     validateData();
     setupNoCoinsChart();
+    setupCoinsChart();
+    setupCoinsByStandardDeviationChart();
 })();
 
