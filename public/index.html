@@ -11,6 +11,9 @@
         div.container {
           max-width: 800px;
         }
+        table {
+          line-height: 1;
+        }
         /*div.chart {
           width: 100%;
           height: 20%;
@@ -45,7 +48,7 @@ body {
               move. But each character has their own special die with different values on the side, and on each
               turn you can use a normal die (with values 1-6), your character's die, or the die of any allies you've
               recruited along the way.
-              Note that some dice have sides that will give or take away coins instead of letting you move. Here's a list of dice
+              Note that some dice have sides that will give or take away coins instead of letting you move. Here's the list of all the dice
               <a href="https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks">(source)</a>:</p>
               <table id="diceTable"></table>
             <p>So, let's dive in!</p>
@@ -56,10 +59,15 @@ body {
              higher than a standard die's total value of 21! (this also sounded to me like the financial idea that
              riskier assets should have higher rewards on average. I realize this is reading waaaay into this video game :-) ) </p>
             <p>So my first step was to graph the sum of all the die's faces versus the standard deviation of
-              the die's faces. 
+              the die's faces. To begin with, let's ignore the dice with coins on them; we'll get to them in a minute:
             </p>
-            <p>No coins</p>
             <div id="noCoinsChart"></div>
+            <p>And, bam, hypothesis busted! The regression line shows a very small relationship in the opposite direction - as the total
+              of the dice block gets bigger, the standard deviation gets smaller. But the R<sup>2</sup> value (or
+              <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of determination</a>) is less than 1%,
+              meaning this has very little explanatory value. You can see this from looking at the points on the graph above;
+              they're all over the place. Really the only thing we can learn here is that Yoshi's die has the lowest total.
+            </p>
             <p>Coins</p>
             <div id="coinsChart"></div>
             <p>Coins by standard deviation</p>

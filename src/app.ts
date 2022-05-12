@@ -157,6 +157,7 @@ function setupNoCoinsChart() {
     const regression_line = make_plotly_regression_line(xs, ys);
     const correlation = calculate_regression_line_correlation(xs, ys, regression_line_info);
     const layout = {
+        title: "Dice with no coins",
         xaxis: {
             title: "Total of numbers on dice block",
         },
