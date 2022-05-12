@@ -18,12 +18,10 @@
         
 body {
   padding: 0;
-  margin: 0;
+  margin: 4px;
   font-family: var(--sans);
   font-size: 1rem;
   line-height: 1.5;
-  /*background-color: #e6e6e6 !important;
-  background-color: var(--surface1, #e6e6e6) !important;*/
 }
 
 
@@ -41,9 +39,24 @@ body {
         <div>
             <h1 style="display: inline-block;">Dice Block Analysis in Super Mario Party</h1>
             <p><a href="#about">About this project</a></p>
-            <p>The kids have been enjoying Super Mario Party (the 2018 one for the Switch), and while playing
-              I've been curious about the wildly different dice blocks each character has. (you can 
-              <a href="https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks">see a list of them here</a>)
+            <p>The kids have been enjoying Super Mario Party (the Nintendo Switch game from 2018), and while playing
+              I've been curious about the wildly different dice blocks each character has.<p>
+            <p>Super Mario Party is basically a board game; every turn you roll a die to see how far you
+              move. But each character has their own special die with different values on the side, and on each
+              turn you can use a normal die (with values 1-6), your character's die, or the die of any allies you've
+              recruited along the way.
+              Note that some dice have sides that will give or take away coins instead of letting you move. Here's a list of dice
+              <a href="https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks">(source)</a>:</p>
+              <table id="diceTable"></table>
+            <p>So, let's dive in!</p>
+            <h2>Initial hypothesis</h2>
+            <p>Just from playing the game, my first guess was that <b>dice with greater volatility would have a
+              higher average value</b>. A prime example of this to me was Bowser's die, which has values
+             -3 coins, -3 coins, 1, 8, 9, 10. It's very volatile but the total value of the moves on the die is 28, much
+             higher than a standard die's total value of 21! (this also sounded to me like the financial idea that
+             riskier assets should have higher rewards on average. I realize this is reading waaaay into this video game :-) ) </p>
+            <p>So my first step was to graph the sum of all the die's faces versus the standard deviation of
+              the die's faces. 
             </p>
             <p>No coins</p>
             <div id="noCoinsChart"></div>
@@ -55,7 +68,7 @@ body {
       </div>
     <div id="about">
       <p><b>About this project:</b> TODO</p>
-      <p>Source files available. Here's a <a href="https://gregstoll.wordpress.com/2021/07/03/new-project-baseball-division-race-charts/">short writeup of the project</a>.</p>
+      <p>Source files available <a href="https://github.com/gregstoll/mario-party-dice/">on GitHub</a>. Here's a <a href="https://gregstoll.wordpress.com/2021/07/03/new-project-baseball-division-race-charts/">short writeup of the project</a>.</p>
     </div>
     <script src="https://cdn.plot.ly/plotly-2.2.0.min.js"></script>
     <script type="text/javascript" src="dist/app.bundle.js"></script>

@@ -8,7 +8,7 @@ interface RegressionInfo {
     slope: number;
     intercept: number;
 }
-const DICE_DATA = new Map<string, CharacterDiceData>([
+const DICE_DATA : [string, CharacterDiceData][] = [
     ["(no character)", {coins: [], moves: [1,2,3,4,5,6]}],
     ["Mario", {coins: [], moves: [1,3,3,3,5,6]}],
     ["Luigi", {coins: [], moves: [1,1,1,5,6,7]}],
@@ -30,10 +30,10 @@ const DICE_DATA = new Map<string, CharacterDiceData>([
     ["Bowser", {coins: [-3,-3], moves: [1,8,9,10]}],
     ["Boo", {coins: [-2,-2], moves: [5,5,7,7]}],
     ["Hammer Bro", {coins: [3], moves: [1,1,5,5,5]}],
-]);
+];
 
 function validateData() {
-    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+    for (const [character, data] of DICE_DATA) {
         if (character.length == 0) {
             console.error("Character name is empty");
         }
@@ -88,11 +88,12 @@ function make_plotly_regression_line(xs: number[], ys: number[]) : object {
     }
 }
 
-function get_moves_and_coin_string(data: CharacterDiceData) : string {
-    const coin_string = data.coins.map(coin => `${coin > 0 ? "+" : ""}${coin} coin${coin !== 1 ? "s" : ""}`).join(",");
-    const move_string = data.moves.map(move => `${move}`).join(",");
+function get_moves_and_coin_string(data: CharacterDiceData, extra_space?: boolean) : string {
+    const joiner_string = extra_space ? ", " : ",";
+    const coin_string = data.coins.map(coin => `${coin > 0 ? "+" : ""}${coin} coin${coin !== 1 ? "s" : ""}`).join(joiner_string);
+    const move_string = data.moves.map(move => `${move}`).join(joiner_string);
     if (coin_string.length > 0) {
-        return coin_string + "," + move_string;
+        return coin_string + joiner_string + move_string;
     }
     return move_string;
 }
@@ -123,11 +124,23 @@ function distance_from_regression_line(line_info: RegressionInfo, x: number, y: 
     return (-1*line_info.slope*x + y - line_info.intercept)/Math.sqrt(1+Math.pow(line_info.slope, 2));
 }
 
+function setupDiceTable() {
+    const table = document.getElementById("diceTable") as HTMLTableElement;
+    let headerTr = document.createElement("tr");
+    headerTr.innerHTML = "<th>Character</th><th>Dice</th>";
+    table.appendChild(headerTr);
+    for (const [character, data] of DICE_DATA) {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `<td>${character}</td><td>${get_moves_and_coin_string(data, true)}</td>`;
+        table.appendChild(tr);
+    }
+}
+
 function setupNoCoinsChart() {
     let xs: number[] = [];
     let ys: number[] = [];
     let texts: string[] = [];
-    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+    for (const [character, data] of DICE_DATA) {
         if (data.coins.length === 0) {
             xs.push(data.moves.reduce((a, b) => a + b));
             ys.push(standard_deviation(data.moves));
@@ -174,11 +187,12 @@ function setupCoinsChart() {
     let ys: number[] = [];
     let sizes: number[] = [];
     let texts: string[] = [];
-    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+    for (const [character, data] of DICE_DATA) {
         if (data.coins.length > 0) {
             xs.push(data.moves.reduce((a, b) => a + b));
             ys.push(data.coins.reduce((a, b) => a + b));
-            sizes.push(standard_deviation(data.moves));
+            // Use the square root so the area of the circle is proportional to the standard deviation
+            sizes.push(Math.sqrt(standard_deviation(data.moves)));
             texts.push(character + "<br>Dice: " + get_moves_and_coin_string(data));
         }
     }
@@ -224,7 +238,7 @@ function setupCoinsByStandardDeviationChart() {
     let standard_deviations = new Map<string, number>();
     let original_xs: number[] = [];
     let original_ys: number[] = [];
-    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+    for (const [character, data] of DICE_DATA) {
         if (data.coins.length > 0) {
             original_xs.push(data.moves.reduce((a, b) => a + b));
             original_ys.push(data.coins.reduce((a, b) => a + b));
@@ -235,7 +249,7 @@ function setupCoinsByStandardDeviationChart() {
     let xs: number[] = [];
     let ys: number[] = [];
     let texts: string[] = [];
-    for (const [character, data] of Array.from(DICE_DATA.entries())) {
+    for (const [character, data] of DICE_DATA) {
         if (data.coins.length > 0) {
             xs.push(standard_deviation(data.moves));
             let x = data.moves.reduce((a, b) => a + b);
@@ -258,7 +272,7 @@ function setupCoinsByStandardDeviationChart() {
             title: "Standard deviation of numbers on dice block",
         },
         yaxis: {
-            title: "TODO \"goodness\"",
+            title: "\"goodness\" (distance from point to line)",
         },
         annotations: [
             {
@@ -308,6 +322,7 @@ function setupCoinsByStandardDeviationChart() {
 
 (function() {
     validateData();
+    setupDiceTable();
     setupNoCoinsChart();
     setupCoinsChart();
     setupCoinsByStandardDeviationChart();
