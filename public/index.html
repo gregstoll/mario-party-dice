@@ -49,10 +49,11 @@ body {
               turn you can use a normal die (with values 1-6), your character's die, or the die of any allies you've
               recruited along the way.
               Note that some dice have sides that will give or take away coins instead of letting you move. Here's the list of all the dice
-              <a href="https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks">(source)</a>:</p>
+              (<a href="https://www.mariowiki.com/Super_Mario_Party#Dice_Blocks">source here</a> - note that there are various other places online that
+              have incorrect values; as far as I can tell these values match what's in the game):</p>
               <table id="diceTable"></table>
             <p>So, let's dive in!</p>
-            <h2>Initial hypothesis</h2>
+            <h2 id="initial-hypothesis">Initial hypothesis</h2>
             <p>Just from playing the game, my first guess was that <b>dice with greater volatility would have a
               higher average value</b>. A prime example of this to me was Bowser's die, which has values
              -3 coins, -3 coins, 1, 8, 9, 10. It's very volatile but the total value of the moves on the die is 28, much
@@ -60,16 +61,36 @@ body {
              riskier assets should have higher rewards on average. I realize this is reading waaaay into this video game :-) ) </p>
             <p>So my first step was to graph the sum of all the die's faces versus the standard deviation of
               the die's faces. To begin with, let's ignore the dice with coins on them; we'll get to them in a minute:
+              (note that you can hover over or tap the points to see what dice block it represents)
             </p>
             <div id="noCoinsChart"></div>
-            <p>And, bam, hypothesis busted! The regression line shows a very small relationship in the opposite direction - as the total
+            <p>And, bam, hypothesis <b>busted</b>! The regression line shows a very small relationship in the opposite direction - as the total
               of the dice block gets bigger, the standard deviation gets smaller. But the R<sup>2</sup> value (or
               <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of determination</a>) is less than 1%,
               meaning this has very little explanatory value. You can see this from looking at the points on the graph above;
               they're all over the place. Really the only thing we can learn here is that Yoshi's die has the lowest total.
             </p>
-            <p>Coins</p>
+            <hr>
+            <h2 id="with-coins">Dice blocks with coins</h2>
+            <p>So, let's look at the dice blocks that have coins on them. One interesting question is About how much
+              is one coin on a dice block worth in terms of movement spaces? And we'll look at our initial hypothesis again -
+              maybe standard deviation matters here?
+            </p>
+            <p>This graph shows the total of the numbers on the dice block versus the total of coins on the dice block,
+              and each point's size is proportional to the standard deviation of the numbers on the dice block:
+            </p>
             <div id="coinsChart"></div>
+            <p>Here the regression line is a pretty good fit, with R<sup>2</sup> around 77%. The slope of the line is very
+            close to -1, meaning that each extra coin takes away about one movement point. Interestingly, the x-intercept of the line is
+            around 21.2, whereas dice with no coins have a total value of either 20 or 21 (or are Yoshi), so on average dice
+            with coins are a tiny bit better than dice without coins.</p>
+            <p>But the individual points are also interesting here. Anything above the line is better than average. Donkey Kong
+              (+5 coins, 0, 0, 0, 10, 10) particularly stands out; his total moves of 20 would match a lot of the dice blocks with
+              no coins on them, but he also has a +5 coins side! Diddy Kong is similar (+2 coins, 0, 0, 7, 7, 7) with a total moves
+              of 21 and a bonus +2 coins. Bowser (-3 coins, -3 coins, 1, 8, 9, 10) is also good if you can stomach the loss of coins, as
+              his total moves of 28 is by far the highest of any dice block!</p>
+            </p>
+            <p>TODO Waluigi</p>
             <p>Coins by standard deviation</p>
             <div id="coinsByStandardDeviationChart"></div>
         </div>
