@@ -31,6 +31,7 @@ const DICE_DATA : [string, CharacterDiceData][] = [
     ["Boo", {coins: [-2,-2], moves: [5,5,7,7]}],
     ["Hammer Bro", {coins: [3], moves: [1,1,5,5,5]}],
 ];
+const DICE_DATA_MAP : Map<string, CharacterDiceData> = new Map(DICE_DATA);
 
 function validateData() {
     for (const [character, data] of DICE_DATA) {
@@ -270,6 +271,7 @@ function setupCoinsByStandardDeviationChart() {
     const regression_line = make_plotly_regression_line(xs, ys);
     const correlation = calculate_regression_line_correlation(xs, ys, regression_line_info);
     const layout = {
+        title: "Dice with coins by standard deviation",
         xaxis: {
             title: "Standard deviation of numbers on dice block",
         },
@@ -322,11 +324,24 @@ function setupCoinsByStandardDeviationChart() {
         index++;
     }*/
 
+function substituteMovesAndCoinsStringSpans() {
+    let spans = document.getElementsByClassName("diceBlock");
+    for (let span of Array.from(spans)) {
+        const name = Array.from(span.classList).filter(className => className.startsWith("diceBlock-"))[0].substring("diceBlock-".length).replace("_", " ");
+        const use_parens = !span.classList.contains("diceBlock-noparen");
+        if (!DICE_DATA_MAP.has(name)) {
+            console.error("No dice block data for " + name);
+        }
+        span.innerHTML = `${use_parens ? '(' : ''}${get_moves_and_coin_string(DICE_DATA_MAP.get(name), true)}${use_parens ? ')' : ''}`;
+    }
+}
+
 (function() {
     validateData();
     setupDiceTable();
     setupNoCoinsChart();
     setupCoinsChart();
     setupCoinsByStandardDeviationChart();
+    substituteMovesAndCoinsStringSpans();
 })();
 

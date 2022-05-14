@@ -28,20 +28,21 @@ body {
 }
 
 
-#about {
+/*#about {
   align-self: flex-start;
   max-width: 800px;
-}
+}*/
     </style>
     <ssihead />
   </head>
   <body>
     <ssibodytop />
       <div class="container">
-        <!--<div style="width: 100%; text-align: center;"> -->
         <div>
-            <h1 style="display: inline-block;">Dice Block Analysis in Super Mario Party</h1>
+            <h1>Dice Block Analysis in Super Mario Party</h1>
+            <!-- TODO - table of contents -->
             <p><a href="#about">About this project</a></p>
+            <h2 id="introduction">Introduction</h2>
             <p>The kids have been enjoying Super Mario Party (the Nintendo Switch game from 2018), and while playing
               I've been curious about the wildly different dice blocks each character has.<p>
             <p>Super Mario Party is basically a board game; every turn you roll a die to see how far you
@@ -56,7 +57,7 @@ body {
             <h2 id="initial-hypothesis">Initial hypothesis</h2>
             <p>Just from playing the game, my first guess was that <b>dice with greater volatility would have a
               higher average value</b>. A prime example of this to me was Bowser's die, which has values
-             -3 coins, -3 coins, 1, 8, 9, 10. It's very volatile but the total value of the moves on the die is 28, much
+             <span class="diceBlock diceBlock-Bowser diceBlock-noparen"></span>. It's very volatile but the total value of the moves on the die is 28, much
              higher than a standard die's total value of 21! (this also sounded to me like the financial idea that
              riskier assets should have higher rewards on average. I realize this is reading waaaay into this video game :-) ) </p>
             <p>So my first step was to graph the sum of all the die's faces versus the standard deviation of
@@ -68,9 +69,8 @@ body {
               of the dice block gets bigger, the standard deviation gets smaller. But the R<sup>2</sup> value (or
               <a href="https://en.wikipedia.org/wiki/Coefficient_of_determination">Coefficient of determination</a>) is less than 1%,
               meaning this has very little explanatory value. You can see this from looking at the points on the graph above;
-              they're all over the place. Really the only thing we can learn here is that Yoshi's die has the lowest total.
+              they're all over the place. Really the only thing we can learn here is that <b>Yoshi</b> <span class="diceBlock diceBlock-Yoshi"></span> has the lowest total.
             </p>
-            <hr>
             <h2 id="with-coins">Dice blocks with coins</h2>
             <p>So, let's look at the dice blocks that have coins on them. One interesting question is About how much
               is one coin on a dice block worth in terms of movement spaces? And we'll look at our initial hypothesis again -
@@ -84,20 +84,63 @@ body {
             close to -1, meaning that each extra coin takes away about one movement point. Interestingly, the x-intercept of the line is
             around 21.2, whereas dice with no coins have a total value of either 20 or 21 (or are Yoshi), so on average dice
             with coins are a tiny bit better than dice without coins.</p>
-            <p>But the individual points are also interesting here. Anything above the line is better than average. Donkey Kong
-              (+5 coins, 0, 0, 0, 10, 10) particularly stands out; his total moves of 20 would match a lot of the dice blocks with
-              no coins on them, but he also has a +5 coins side! Diddy Kong is similar (+2 coins, 0, 0, 7, 7, 7) with a total moves
-              of 21 and a bonus +2 coins. Bowser (-3 coins, -3 coins, 1, 8, 9, 10) is also good if you can stomach the loss of coins, as
-              his total moves of 28 is by far the highest of any dice block!</p>
+            <p>But the individual points are also interesting here. Anything above the line is better than average. <b>Donkey Kong</b>
+              <span class="diceBlock diceBlock-Donkey_Kong"></span> particularly stands out; his total moves of 20 would match a lot of the dice blocks with
+              no coins on them, but he also has a +5 coins side! <b>Diddy Kong</b> is similar <span class="diceBlock diceBlock-Diddy_Kong"></span> with a total moves
+              of 21 and a bonus +2 coins. <b>Bowser</b> <span class="diceBlock diceBlock-Bowser"></span> is also good if you can stomach the loss of coins, as
+              his total moves of 28 is by far the highest of any dice block!</p> These three are all on the <a href="https://en.wikipedia.org/wiki/Pareto_front">Pareto frontier</a>, as are
+              <b>Boo</b> <span class="diceBlock diceBlock-Boo"></span> and <b>Wario</b> <span class="diceBlock diceBlock-Wario"></span>. TODO
             </p>
-            <p>TODO Waluigi</p>
-            <p>Coins by standard deviation</p>
+            <p>On the flip side, I think <b>Waluigi</b> <span class="diceBlock diceBlock-Waluigi"></span> is the worst die in the game; the total moves of 21 is no better
+              than most dice blocks with no coins on them, and there's also a -3 coins side. <b>Boo</b> <span class="diceBlock diceBlock-Boo"></span> and <b>Wario</b>
+              <span class="diceBlock diceBlock-Wario"></span> are also underwhelming, but at least their move totals is 24, which is better than you can do
+              with a die with no coins on it.
+            </p>
+            <p>We can </p> 
+            <h2 id="back-to-the-initial-hypothesis">Back to the initial hypothesis</h2>
+            <p>Since the previous graph has the points' sizes proportional to standard deviation, it's interesting to see that
+              it looks like the points above the line (i.e. the ones that are better "values") are bigger on average. If this is true,
+              this would mean our original hypothesis was true, at least for dice with coins on them!
+            </p>
+            <p>So let's check it out by graphing standard deviation versus how far away the point is from
+              the regression line in the above graph; distances above 0 mean the point is above the line (and
+              therefore better than expected):
+            </p>
             <div id="coinsByStandardDeviationChart"></div>
+            <p>And there we go! The R<sup>2</sup> value is a smidge under 50%, and the slope is reasonable-looking, so there
+            does seem to be a reward for choosing dice with high volatility, as long as they also have faces with coins.</p>
+            <h2 id="other-considerations">Other considerations</h2>
+            <p>
+              To be clear, there's more to choosing dice than just maximizing the average value. You might be in a situation where
+              the star is only 3 steps away; in that case Daisy <span class="diceBlock diceBlock-Daisy"></span> would be a perfect choice. But if the star is 8 steps away
+              and you think the other players are going to get to it on their turns if you don't, Bowser <span class="diceBlock diceBlock-Bowser"></span> is a much
+              better choice! You can always choose the standard die, and since you can choose between the dice of your allies
+              it probably makes sense to try to collect a variety of dice with different standard deviations.
+            </p>
+            <p>
+              Another consideration is whether you think you'll be able to get a lot of coins from minigames, etc. If 
+              so, Bowser <span class="diceBlock diceBlock-Bowser"></span> is a great choice. If you're worried about getting coins,
+              Donkey Kong <span class="diceBlock diceBlock-Donkey_Kong"></span> or Goomba <span class="diceBlock diceBlock-Goomba"></span> are good choices.
+            </p>
+            <p>
+              In the Partner Party game, you and your partner both roll dice and add them together, so this can also
+              make it less painful to roll a 0 on your die.
+            </p>
+            <h2 id="conclusions">Conclusions</h2>
+            <ul>
+              <li>For dice without coins on a face, the average value is very similar for all of the dice,
+                so it doesn't make much difference. (although <b>Yoshi</b> <span class="diceBlock diceBlock-Yoshi"></span> does have the lowest total...) </li>
+              <li>Excellent overall choices are <b>Donkey Kong</b> <span class="diceBlock diceBlock-Donkey_Kong"></span> and <b>Diddy Kong</b> <span class="diceBlock diceBlock-Diddy_Kong"></span>,
+                as their move totals are as good as any die without coins on a face, plus they have extra coins!</li>
+              <li>If you're really worried about coins, TODO</li>
+              <li>TODO other good choices (Pareto)</li>
+              <li>TODO Waluigi bad</li>
+            </ul>
         </div>
       </div>
     <div id="about">
-      <p><b>About this project:</b> TODO</p>
-      <p>Source files available <a href="https://github.com/gregstoll/mario-party-dice/">on GitHub</a>. Here's a <a href="https://gregstoll.wordpress.com/2021/07/03/new-project-baseball-division-race-charts/">short writeup of the project</a>.</p>
+      <p><b>About this project:</b> TODO - why standard deviation on just dice rolls?</p>
+      <p>Source files available <a href="https://github.com/gregstoll/mario-party-dice/">on GitHub</a>. <!-- TODO Here's a <a href="https://gregstoll.wordpress.com/2021/07/03/new-project-baseball-division-race-charts/">short writeup of the project</a>.--></p>
     </div>
     <script src="https://cdn.plot.ly/plotly-2.2.0.min.js"></script>
     <script type="text/javascript" src="dist/app.bundle.js"></script>
