@@ -152,7 +152,9 @@ function setupNoCoinsChart() {
         x: xs,
         y: ys,
         mode: "markers",
-        text: texts
+        text: texts,
+        hovertemplate: "(%{x}, %{y:.2f})<br>%{text}<extra></extra>" // the "<extra></extra>" at the end suppresses
+                                                                    // the plot name, which is meaningless for us
     };
     const regression_line_info = calculate_regression_line(xs, ys);
     const regression_line = make_plotly_regression_line(xs, ys);
@@ -203,6 +205,8 @@ function setupCoinsChart() {
         y: ys,
         mode: "markers",
         text: texts,
+        hovertemplate: "(%{x}, %{y})<br>%{text}<extra></extra>", // the "<extra></extra>" at the end suppresses
+                                                                 // the plot name, which is meaningless for us
         marker: {
             size: sizes.map(size => size * 7)
         }
@@ -265,7 +269,9 @@ function setupCoinsByStandardDeviationChart() {
         x: xs,
         y: ys,
         mode: "markers",
-        text: texts
+        text: texts,
+        hovertemplate: "(%{x:.2f}, %{y:.2f})<br>%{text}<extra></extra>", // the "<extra></extra>" at the end suppresses
+                                                                         // the plot name, which is meaningless for us
     };
     const regression_line_info = calculate_regression_line(xs, ys);
     const regression_line = make_plotly_regression_line(xs, ys);
