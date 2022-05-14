@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
     </script>
-    <!-- <link rel="canonical" href="https://gregstoll.com/baseballdivisionraces" /> -->
+    <!-- TODO <link rel="canonical" href="https://gregstoll.com/baseballdivisionraces" /> -->
     <title>Super Mario Party dice blocks analysis</title>
     <style>
         div.container {
@@ -30,6 +30,9 @@ ul.table-of-contents {
   background-color: #ddd;
   border: 2px solid #35acff;
   border-radius: 20px;
+  /* sigh, I really want to make this just fit its contents, but can't
+     figure out how to do that. */
+  width: 50%;
 }
 ul.table-of-contents h3 {
   margin: 0 5px;
@@ -54,8 +57,8 @@ ul.table-of-contents h3 {
               <li><a href="#back-to-the-initial-hypothesis">Back to the initial hypothesis</a></li>
               <li><a href="#other-considerations">Other considerations</a></li>
               <li><a href="#conclusions">Conclusions</a></li>
+              <li><a href="#about">About this project</a></li>
             </ul>
-            <p><a href="#about">About this project</a></p>
             <h2 id="introduction">Introduction</h2>
             <p>The kids have been enjoying Super Mario Party (the Nintendo Switch game from 2018), and while playing
               I've been curious about the wildly different dice blocks each character has.<p>
@@ -126,15 +129,15 @@ ul.table-of-contents h3 {
             <h2 id="other-considerations">Other considerations</h2>
             <p>
               To be clear, there's more to choosing dice than just maximizing the average value. You might be in a situation where
-              the star is only 3 steps away; in that case Daisy <span class="diceBlock diceBlock-Daisy"></span> would be a perfect choice. But if the star is 8 steps away
-              and you think the other players are going to get to it on their turns if you don't, Bowser <span class="diceBlock diceBlock-Bowser"></span> is a much
+              the star is only 3 steps away; in that case <b>Daisy</b> <span class="diceBlock diceBlock-Daisy"></span> would be a perfect choice. But if the star is 8 steps away
+              and you think the other players are going to get to it on their turns if you don't, <b>Bowser</b> <span class="diceBlock diceBlock-Bowser"></span> is a much
               better choice! You can always choose the standard die, and since you can choose between the dice of your allies
               it probably makes sense to try to collect a variety of dice with different standard deviations.
             </p>
             <p>
               Another consideration is whether you think you'll be able to get a lot of coins from minigames, etc. If 
-              so, Bowser <span class="diceBlock diceBlock-Bowser"></span> is a great choice. If you're worried about getting coins,
-              Donkey Kong <span class="diceBlock diceBlock-Donkey_Kong"></span> or Goomba <span class="diceBlock diceBlock-Goomba"></span> are good choices.
+              so, <b>Bowser</b> <span class="diceBlock diceBlock-Bowser"></span> is a great choice. If you're worried about getting coins,
+              <b>Donkey Kong</b> <span class="diceBlock diceBlock-Donkey_Kong"></span> or <b>Goomba</b> <span class="diceBlock diceBlock-Goomba"></span> are good choices.
             </p>
             <p>
               In the Partner Party game, you and your partner both roll dice and add them together, so this can also
@@ -143,12 +146,17 @@ ul.table-of-contents h3 {
             <h2 id="conclusions">Conclusions</h2>
             <ul>
               <li>For dice without coins on a face, the average value is very similar for all of the dice,
-                so it doesn't make much difference. (although <b>Yoshi</b> <span class="diceBlock diceBlock-Yoshi"></span> does have the lowest total...) </li>
+                so it doesn't make much difference - it's up to you whether you want something with high variance like
+                <b>Koopa Troopa</b> <span class="diceBlock diceBlock-Koopa_Troopa"></span> or something with low variance
+                like <b>Daisy</b> <span class="diceBlock diceBlock-Daisy"></span> or <b>Shy Guy</b> <span class="diceBlock diceBlock-Shy_Guy"></span>. Although
+                it should be noted that <b>Yoshi</b> <span class="diceBlock diceBlock-Yoshi"></span> does have the lowest total! </li>
               <li>Excellent overall choices are <b>Donkey Kong</b> <span class="diceBlock diceBlock-Donkey_Kong"></span> and <b>Diddy Kong</b> <span class="diceBlock diceBlock-Diddy_Kong"></span>,
                 as their move totals are as good as any die without coins on a face, plus they have extra coins!</li>
-              <li>If you're really worried about coins, TODO</li>
-              <li>TODO other good choices (Pareto)</li>
-              <li>TODO Waluigi bad</li>
+              <li>If you think you'll be getting plenty of coins, <b>Bowser</b> <span class="diceBlock diceBlock-Bowser"></span> is the best choice, or if you're feeling a
+                little less sure, <b>Boo</b> <span class="diceBlock diceBlock-Boo"></span> or <b>Wario</b> <span class="diceBlock diceBlock-Wario"></span> are reasonable
+                choices.</li>
+              <li>The dice with coins on their faces not mentioned above are all strictly dominated by the ones that were mentioned;
+                 <b>Waluigi</b> <span class="diceBlock diceBlock-Waluigi"></span> is particularly bad!</li>
             </ul>
         </div>
       </div>
