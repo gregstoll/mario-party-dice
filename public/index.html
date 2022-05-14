@@ -26,8 +26,14 @@ body {
   font-size: 1rem;
   line-height: 1.5;
 }
-
-
+ul.table-of-contents {
+  background-color: #ddd;
+  border: 2px solid #35acff;
+  border-radius: 20px;
+}
+ul.table-of-contents h3 {
+  margin: 0 5px;
+}
 /*#about {
   align-self: flex-start;
   max-width: 800px;
@@ -40,7 +46,15 @@ body {
       <div class="container">
         <div>
             <h1>Dice Block Analysis in Super Mario Party</h1>
-            <!-- TODO - table of contents -->
+            <ul class="table-of-contents">
+              <h3>Table of contents</h3>
+              <li><a href="#introduction">Introduction</a></li>
+              <li><a href="#initial-hypothesis">Initial hypothesis</a></li>
+              <li><a href="#with-coins">Dice blocks with coins</a></li>
+              <li><a href="#back-to-the-initial-hypothesis">Back to the initial hypothesis</a></li>
+              <li><a href="#other-considerations">Other considerations</a></li>
+              <li><a href="#conclusions">Conclusions</a></li>
+            </ul>
             <p><a href="#about">About this project</a></p>
             <h2 id="introduction">Introduction</h2>
             <p>The kids have been enjoying Super Mario Party (the Nintendo Switch game from 2018), and while playing
