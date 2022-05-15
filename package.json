@@ -4,7 +4,7 @@
   "description": "An analysis of dice blocks in Super Mario Party",
   "private": true,
   "scripts": {
-    "start": "webpack serve --liveReload",
+    "start": "webpack serve --live-reload",
     "build": "webpack --config webpack.prod.config.js && node replaceSsiTags.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
