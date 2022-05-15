@@ -85,7 +85,9 @@ function make_plotly_regression_line(xs: number[], ys: number[]) : object {
         line: {
             dash: 'dot',
             width: 2
-        }
+        },
+        hovertemplate: "<extra></extra>" // the "<extra></extra>" at the end suppresses
+                                         // the plot name, which is meaningless for us
     }
 }
 
